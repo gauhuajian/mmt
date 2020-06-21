@@ -1,6 +1,8 @@
-const common = 'http://172.20.10.9:3000/api'
+const common = 'http://43.226.156.65:3000/api'
 const conmmonTwo = 'http://152.136.185.210:8000/api/n3'
+import store from '@/store/index.js'
 export function request(obj = {}){
+	const token = store.state.user.token
 	uni.showLoading({
 		title: '加载中'
 	});
@@ -11,12 +13,18 @@ export function request(obj = {}){
 		option.url = common+obj.url
 	}
 	option.data = obj.data
-	option.header = {
+	if(obj.token==true){
+		obj.header={
+			'token':token
+		}
+	}
+	option.header =obj.header ||  {
 		"Content-Type":"application/json",
 		"Content-Type":"application/x-www-form-urlencoded"
-	} || obj.header
+	} 
 	option.method =  obj.method || "GET" 
 	option.dataType = obj.dataType || 'json'
+	
 	return new Promise((res,rej)=>{
 		uni.request({
 			...option,

@@ -30,12 +30,19 @@
 				</view>
 			</view>
 		</scroll-view>
+		
+		<tabBar cureentPage="category"></tabBar>
+		
 	</view>
 </template>
 
 <script>
 	import {loadCategory,getSubcategory} from '@/network/category.js'
+	import tabBar from '@/components/tabbar/TabBar.vue'
 	export default {
+		components:{
+			tabBar
+		},
 		data() {
 			return {
 				cateList:[],

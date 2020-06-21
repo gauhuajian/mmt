@@ -2,20 +2,19 @@
 	<view class="my">
 		<view class='my-header'>
 			<view class='header-main'>
-				<view class='header-config'>
+				<view class='header-config' @tap="goConfig">
 					<image class='config-img' src="../../static/img/config.png" mode=""></image>
 				</view>
 				<view class='header-logo' >
-					<image class='logo-img' src="https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3521319392,1160740190&fm=26&gp=0.jpg" mode=""></image>
+					<image class='logo-img' :src="userInfo.imgUrl" mode=""></image>
 					<view class='logo-name'>
-						用户名称
+						{{userInfo.nickName}}
 					</view>
 				</view>
 			</view>
 		</view> 	
-		
 		<view class='order'>
-			<view class='order-title'>
+			<view class='order-title' @tap="goOrder">
 				<view>我的订单</view>
 				<view>全部订单 > </view>
 			</view>
@@ -45,7 +44,6 @@
 		
 		<!--内容列表-->
 		<view class='my-content'>
-			
 			<view class="my-content-item">
 				<view>我的收藏</view>
 				<view>Go</view>
@@ -56,19 +54,39 @@
 			</view>
 			
 		</view>
-		
+		<tabBar cureentPage="my"></tabBar>
 	</view>
 </template>
 
 <script>
+	import tabBar from '@/components/tabbar/TabBar.vue'
+	import {mapState} from 'vuex'
 	export default {
+		components:{
+			tabBar
+		},
 		data() {
 			return {
-				
 			}
 		},
+		onLoad() {
+		},
 		methods: {
-			
+			goConfig(){
+				uni.navigateTo({
+					url:"../my-config/my-config"
+				})
+			},
+			goOrder(){
+				uni.navigateTo({
+					url:'../my-order/my-order'
+				})
+			}
+		},
+		computed:{
+			...mapState({
+				userInfo:state=>state.user.userInfo
+			}),
 		}
 	}
 </script>
@@ -105,6 +123,8 @@
 	background-color: #FFFFFF;
 }
 .logo-name{
+	width: 100%;
+	text-align: center;
 	font-weight: bold;
 	color:#FFFFFF;
 }

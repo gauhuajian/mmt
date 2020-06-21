@@ -10,13 +10,15 @@
 						<button plain='true' size='mini' :disabled="disabled" >{{codeMsg}}</button>
 					</view>
 				</view>
-				<view class='tel'>下一步</view>
+				<view class='tel' @tap="goNextIndex">下一步</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {mapMutations} from 'vuex'
+	import {sendCode,addUserData} from '@/network/login.js'
 	import Lines from '@/components/common/Lines.vue'
 	export default {
 		data() {
@@ -41,12 +43,16 @@
 		},
 		onReady() {
 			this.codeMsg = '重新发送('+this.codeNum+')';
-			 this.sendCode();
+			this.sendCode();
 		},
 		methods: {
+			...mapMutations(['login']),
 			//点击验证码发送
-			sendCode(){
+			async sendCode(){
 				this.disabled = true;
+				let res =  await sendCode(this.phone)
+				this.getCode = res.code
+				console.log(res)
 				let timer = setInterval(()=>{
 					--this.codeNum;
 					this.codeMsg = '重新发送('+this.codeNum+')';
@@ -57,6 +63,26 @@
 					this.disabled = false;
 					this.codeMsg = '重新发送';
 				},60000)
+			},
+			async goNextIndex(){
+				if(this.getCode == this.userCode ){
+				 	let res = await addUserData(this.phone,this.userCode)
+					if(res.success){
+						this.login(res.data);
+						uni.redirectTo({
+							url:"../index/index"
+						})
+						uni.showToast({
+							title:res.msg,
+							icon:"none"
+						})
+					}
+				}else{
+					uni.showToast({
+						title:"验证码错误",
+						icon:"none"
+					})
+				}
 			}
 		}
 	}

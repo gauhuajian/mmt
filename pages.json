@@ -33,7 +33,11 @@
         }
         ,{
             "path" : "pages/cart/cart",
-            "style" : {}
+            "style" : {
+				"app-plus":{
+					"titleNView":false
+				}
+			}
         }
         ,{
             "path" : "pages/my/my",
@@ -113,36 +117,70 @@
 				"navigationBarTextStyle":"white"
 			}
         }
-    ],
-	"tabBar":{
-		"selectedColor":"#000",
-		"list":[
-			{
-				"pagePath":"pages/index/index",
-				"text":"首页",
-				"iconPath":"static/tabbar/index.png",
-				"selectedIconPath":"static/tabbar/indexSelected.png"
-			},
-			{
-				"pagePath":"pages/category/category",
-				"text":"分类",
-				"iconPath":"static/tabbar/list.png",
-				"selectedIconPath":"static/tabbar/listSelected.png"
-			},
-			{
-				"pagePath":"pages/cart/cart",
-				"text":"购物车",
-				"iconPath":"static/tabbar/shop.png",
-				"selectedIconPath":"static/tabbar/shopSelected.png"
-			},
-			{
-				"pagePath":"pages/my/my",
-				"text":"我的",
-				"iconPath":"static/tabbar/my.png",
-				"selectedIconPath":"static/tabbar/mySelected.png"
+        ,{
+            "path" : "pages/my-config/my-config",
+            "style" : {
+				"navigationBarTitleText": "设置",
+				"navigationBarBackgroundColor": "#42B7FB",
+				"navigationBarTextStyle":"white"
 			}
-		]
-	},
+        }
+        ,{
+            "path" : "pages/my-path-list/my-path-list",
+            "style" : {
+				"navigationBarTitleText": "地址管理",
+				"navigationBarBackgroundColor": "#42B7FB",
+				"navigationBarTextStyle":"white"
+			}
+        }
+        ,{
+            "path" : "pages/my-add-path/my-add-path",
+            "style" : {
+				"navigationBarBackgroundColor":"#FFFFFF",
+				"navigationBarTitleText": "新增地址",
+				"app-plus":{
+					"scrollIndicator":"none",
+					"titleNView":{
+						"buttons":[
+							{
+								"float":"right",
+								"color":"#636263",
+								"text":"保存",
+								"fontSize":"16px",
+								"width":"60px"
+							}
+						]
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/my-order/my-order",
+			   "style" : {
+				"navigationBarTitleText": "我的订单",
+				"navigationBarBackgroundColor":"#FFFFFF"
+			}
+        }
+        ,{
+			"path" : "pages/confirm-order/confirm-order",
+            "style" : {
+				"navigationBarTitleText": "确认订单",
+				"navigationBarBackgroundColor":"#FFFFFF"
+			}
+        }
+        ,{
+            "path" : "pages/payment/payment",
+			"style" : {
+				"app-plus":{
+					"titleNView":false
+				}
+			}
+        }
+        ,{
+            "path" : "pages/payment-success/payment-success",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "买买提",

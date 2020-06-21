@@ -100,8 +100,11 @@
 </template>
 
 <script>
+	//vuex
+	import {mapMutations} from 'vuex'
 	// 网络
 	import {getDetail,recommend} from '@/network/details.js'
+	import {addCartData} from '@/network/cart.js'
 	// 组件
 	import GuessGoods from '@/components/common/GuessGoods.vue'
 	import Card from '@/components/common/Card.vue'
@@ -160,6 +163,7 @@
 			}
 		},
 		methods: {
+			...mapMutations(['addShopCart']),
 			 async loadDetails(id){
 			 	let res = await getDetail(id)
 				let data  = res.result
@@ -168,7 +172,6 @@
 				this.option.props = data.skuInfo.props
 				this.option.skus = data.skuInfo.skus
 				this.loadRecommend()
-				console.log(data)
 			},
 			async loadRecommend(){
 				let res = await recommend()
@@ -213,11 +216,17 @@
 				if(this.Active!=0 && this.ActiveTwo!=0){
 					// 添加购物车
 					let info = {}
-					info.data = this.skus
+					info.title = this.detailsData.title
+					info.id = this.detailsData.iid
+					info.img = this.skus.img
+					info.price = this.skus.nowprice
 					info.num = this.num
-					
+					info.size = this.skus.size
+					info.style= this.skus.style
+					info.checked = false
+					addCartData(info)
 					// vuex  数据  info
-					
+					this.addShopCart(info)
 					this.hidePop()
 					// 重置
 					this.Active = this.ActiveTwo = 0

@@ -101,6 +101,7 @@ router.post('/api/addUser', function(req, res, next) {
 		userName : req.body.userName,
 		userCode : req.body.code
 	};
+	console.log(params,code)
 	if(  params.userCode == code   ){
 		connection.query( user.insertData( params ) , function (error, results, fields) {
 		    connection.query( user.queryUserName( params ) , function (err, result) {
@@ -181,7 +182,161 @@ router.post('/api/login',function(req,res,next){
 		 })
 })
 
+//获取当前用户购物车列表
+router.post('/api/selectCart', function(req, res, next) {
+	let token = req.headers.token;
+	let phone = jwt_decode(token);
+	if(phone.name.length>11){
+		connection.query(`select * from user where openid = '${phone.name}' ` , function (error, results, fields) {
+			let userId = results[0].id;
+			connection.query(`select * from goods_cart where uId = ${userId}`, function (err, result) {
+				res.json({
+					data:result
+				})
+			})
+		})
+	}else{
+		connection.query(`select * from user where phone = ${phone.name}`, function (error, results, fields) {
+				let userId = results[0].id;
+				connection.query(`select * from goods_cart where uId = ${userId}`, function (err, result) {
+					res.json({
+						data:result
+					})
+				})
+		})
+	}
+})
 
+
+//加入购物车
+router.post('/api/addCart', function(req, res, next) {
+	let token = req.headers.token;
+	let phone = jwt_decode(token);
+	//商品id
+	let goods = req.body;
+	//用户输入的商品数量
+	if(phone.name.length>11){
+		console.log(phone.name)
+		connection.query(`select * from user where openid = '${phone.name}'`, function (error, results, fields) {
+			let uId = results[0].id
+			connection.query("select * from goods_cart where goods_id = '"+goods.id+"' and uId="+ uId+" and size='"+goods.size+"'"+"and style='"+goods.style+"'", function (error, d, fields) {
+				if(d.length>0){
+					connection.query("update goods_cart set num = num+"+goods.num+" where goods_id='"+goods.id+"' and uId="+ uId+" and size='"+goods.size+"'"+"and style='"+goods.style+"'" , function (e, r) {
+						res.json({
+							data:{
+								success:"加入成功"
+							}
+						})
+					})
+				}else{
+					connection.query('insert into goods_cart (uId,goods_id,name,imgUrl,pprice,num,size,style) values ("'+uId+'","'+goods.id+'","'+goods.title+'","'+goods.img+'","'+goods.price+'","'+goods.num+'","'+goods.size+'","'+goods.style+'")', function (err, data) {
+						res.json({
+							data:{
+								success:"加入成功"
+							}
+						})
+					})
+				}
+			})
+			
+		})
+	}else{
+		connection.query(`select * from user where phone = ${phone.name}`, function (error, results, fields) {
+			let uId = results[0].id
+			connection.query("select * from goods_cart where goods_id = '"+goods.id+"' and uId="+ uId+" and size='"+goods.size+"'"+"and style='"+goods.style+"'", function (error, d, fields) {
+				if(d.length>0){
+					connection.query("update goods_cart set num = num+"+goods.num+" where goods_id='"+goods.id+"' and uId="+ uId+" and size='"+goods.size+"'"+"and style='"+goods.style+"'", function (e, r) {
+						res.json({
+							data:{
+								success:"加入成功"
+							}
+						})
+					})
+				}else{
+					connection.query('insert into goods_cart (uId,goods_id,name,imgUrl,pprice,num,size,style) values ("'+uId+'","'+goods.id+'","'+goods.title+'","'+goods.img+'","'+goods.price+'","'+goods.num+'","'+goods.size+'","'+goods.style+'")', function (err, data) {
+						res.json({
+							data:{
+								success:"加入成功"
+							}
+						})
+					})
+				}
+			})
+			
+		})
+	}
+})
+
+
+//当前用户修改收货地址
+router.post('/api/updateAddress', function(req, res, next) {
+	let token = req.headers.token;
+	let phone = jwt_decode(token);
+	let name = req.body.name;
+	let tel = req.body.tel;
+	let province = req.body.province;
+	let city = req.body.city;
+	let dlistrict = req.body.dlistrict;
+	let address = req.body.address;
+	let isDefault = req.body.isDefault;
+	let id = req.body.id;
+	//获取userId
+	connection.query(`select * from user where phone = ${phone.name}`, function (error, results, fields) {
+		let userId = results[0].id;
+		connection.query(`select * from address where userId = ${userId}`, function (err, result) {
+			let childId = result[0].id;
+			connection.query(`update address set isDefault = replace(isDefault,"true","false") where id = ${childId}`, function (e, r) {
+				let updateSql = `update address set name = ?,tel = ?,province = ?,city = ?,dlistrict = ?,address = ?,isDefault = ?,userId = ? where id = ${id}`
+				connection.query(updateSql,[name,tel,province,city,dlistrict,address,isDefault,userId],function (err, result) {
+					res.send({
+						data:{
+							success:'成功'
+						}
+					})
+				})
+			})
+		})
+	})
+})
+
+
+//当前用户新增收货地址
+router.post('/api/addAddress', function(req, res, next) {
+	let token = req.headers.token;
+	let phone = jwt_decode(token);
+	let name = req.body.name;
+	let tel = req.body.tel;
+	let province = req.body.province;
+	let city = req.body.city;
+	let dlistrict = req.body.dlistrict;
+	let address = req.body.address;
+	let isDefault = req.body.isDefault;
+	connection.query(`select * from user where phone = ${phone.name}`, function (error, results, fields) {
+		let id = results[0].id;
+		let sqlInert = 'insert into address (name,tel,province,city,dlistrict,address,isDefault,userId) values ("'+name+'","'+tel+'","'+province+'","'+city+'","'+dlistrict+'","'+address+'","'+isDefault+'","'+id+'")';
+		connection.query(sqlInert, function (err, result, field) {
+			res.send({
+				data:{
+					success:"成功"
+				}
+			})
+		})
+	})
+})
+
+// 获取用户地址
+router.post('/api/selectAddress', function(req, res, next) {
+	let token = req.headers.token;
+	let phone = jwt_decode(token);
+	connection.query(`select * from user where phone = ${phone.name}`, function (error, results, fields) {
+		let id = results[0].id;
+		connection.query(`select * from address where userId = ${id}`, function (err, result, field) {
+			res.send({
+				data:result
+			})
+		})
+	})
+})
 
 
 //食品第一次加载的数据

@@ -42,7 +42,7 @@
 				</scroll-view>
 			</swiper-item>
 		</swiper>
-		
+		<tabBar cureentPage="index"></tabBar>
 	</view>
 </template>
 
@@ -59,6 +59,7 @@
 	import Card from '@/components/common/Card.vue'
 	import Goods from "@/components/common/Goods.vue"
 	import GuessGoods from '@/components/common/GuessGoods.vue'
+	import tabBar from '@/components/tabbar/TabBar.vue'
 	export default{
 		components:{
 			Banner,
@@ -68,7 +69,8 @@
 			Icons,
 			Goods,
 			shop,
-			GuessGoods
+			GuessGoods,
+			tabBar
 		},
 		data(){
 			return {
